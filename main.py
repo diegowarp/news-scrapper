@@ -14,7 +14,7 @@ class Config:
     """
     SEARCH_URL = "https://www.latimes.com/"
     DATE_STR = datetime.now().strftime("%Y%m%d")
-    OUTPUT_DIR = os.path.join(os.getcwd(), f'output_{DATE_STR}')  # For each day's attempt, a new output folder.
+    OUTPUT_DIR = os.path.join(os.getcwd(), 'output')  # Output directory
     LOG_FILE = os.path.join(OUTPUT_DIR, 'scraper.log')
 
 # Ensure output directory exists

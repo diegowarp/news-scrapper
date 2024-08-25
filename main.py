@@ -7,7 +7,7 @@ from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from urllib.parse import urlparse, parse_qs, unquote
 from datetime import datetime
-from robocorp.tasks import task
+
 
 class Config:
     """

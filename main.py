@@ -7,6 +7,7 @@ from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from urllib.parse import urlparse, parse_qs, unquote
 from datetime import datetime
+from robocorp.tasks import task
 
 class Config:
     """
@@ -73,9 +74,9 @@ class NewsScraper:
         """
         logger.info(f"Searching for news with phrase: '{self.search_phrase}'")
         try:
-            self.browser.click_element("css:button[data-element='search-button']") #The search button element.
-            self.browser.input_text("css:input[data-element='search-form-input']", self.search_phrase) # The search input field.
-            self.browser.press_keys("css:input[data-element='search-form-input']", "ENTER") # Prssing ENTER to search.
+            self.browser.click_element("css:button[data-element='search-button']")  # The search button element.
+            self.browser.input_text("css:input[data-element='search-form-input']", self.search_phrase)  # The search input field.
+            self.browser.press_keys("css:input[data-element='search-form-input']", "ENTER")  # Pressing ENTER to search.
             logger.info("Search completed successfully.")
             self.progress_indicator(2, 3)
         except Exception as e:
@@ -138,7 +139,7 @@ class NewsScraper:
                     self.browser.go_to(actual_image_url)
                     image_name = actual_image_url.split("/")[-1]
                     image_path = os.path.join(Config.OUTPUT_DIR, image_name)
-                    self.browser.screenshot(filename=image_path) #Since using requests is out of the table, a good solution I discovered was using the screenshot method. 
+                    self.browser.screenshot(filename=image_path)  # Using screenshot method.
                     logger.info(f"Image downloaded successfully: {image_name}")
                     return image_name
                 else:
@@ -174,7 +175,7 @@ class NewsScraper:
 
     def save_to_excel(self, articles):
         """
-        Saves the extracted artcle data to an Excel file.
+        Saves the extracted article data to an Excel file.
 
         Args:
             articles (list): A list of dictionaries containing article data.
@@ -195,6 +196,20 @@ class NewsScraper:
             logger.error(f"Error saving data to Excel: {e}")
             raise
 
+    def progress_indicator(self, step, total):
+        """
+        Displays and logs the progress of the scraping process.
+
+        Args:
+            step (int): The current step number.
+            total (int): The total number of steps in the process.
+        """
+        progress_message = f"Progress: {step}/{total} steps completed."
+        logger.info(progress_message)
+        print(progress_message)
+        time.sleep(1)
+
+    @task
     def run(self):
         """
         Executes the complete scraping process: opening the site, searching, extracting, and saving data into the excel file.
@@ -212,21 +227,8 @@ class NewsScraper:
             self.browser.close_browser()
             logger.info("Browser closed.")
 
-    def progress_indicator(self, step, total):
-        """
-        Displays and logs the progress of the scraping process.
-
-        Args:
-            step (int): The current step number.
-            total (int): The total number of steps in the process.
-        """
-        progress_message = f"Progress: {step}/{total} steps completed."
-        logger.info(progress_message)
-        print(progress_message)
-        time.sleep(1)
-
 
 if __name__ == "__main__":
-    search_phrase = "million" 
+    search_phrase = "technology" 
     scraper = NewsScraper(search_phrase)
     scraper.run()
